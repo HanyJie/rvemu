@@ -9,24 +9,38 @@
 #define ELF64    2
 #define ELF_RISCV 243
 
+#define PT_LOAD 1
+#define PL_X    0x1  // 可执行段
+#define PL_W    0x2  // 可写段
+#define PL_R    0x4  // 可读段
 
 typedef struct {
-    unsigned char e_ident[EI_NIDENT]; // Magic number and other info.
-    elf64_half    e_type;             // Identifies object file type.
-    elf64_half    e_machine;          // Specifies target ISA.
-    elf64_word    e_version;          // File version.
-    elf64_addr    e_entry;            // The memory address of the program entry.
-    elf64_off     e_phoff;            // Program Header Table offset.
-    elf64_off     e_shoff;            // of Section Header Table offset.
-    elf64_word    e_flags;            // Processor specific flags.
-    elf64_half    e_ehsize;           // ELF header size.(byte)
-    elf64_half    e_phentsize;        // Contains the size of a program header table entry.(byte)
-    elf64_half    e_phnum;            // Contains the number of entries in the program header table.
-    elf64_half    e_shentsize;        // Contains the size of a section header table entry.(byte)
-    elf64_half    e_shnum;            // Contains the number of entries in the section header table.
-    elf64_half    e_shstrndx;         // Section header string table index
+    unsigned char e_ident[EI_NIDENT]; // ELF魔数和其他标识信息
+    elf64_half    e_type;             // 文件类型，如可执行文件、共享库等
+    elf64_half    e_machine;          // 目标体系结构，如x86、ARM等
+    elf64_word    e_version;          // ELF文件版本号
+    elf64_addr    e_entry;            // 程序执行的起始地址
+    elf64_off     e_phoff;            // 程序头表在文件中的偏移量
+    elf64_off     e_shoff;            // 节头表在文件中的偏移量
+    elf64_word    e_flags;            // 处理器特定标志
+    elf64_half    e_ehsize;           // ELF文件头的大小
+    elf64_half    e_phentsize;        // 程序头表项的大小
+    elf64_half    e_phnum;            // 程序头表中的条目数
+    elf64_half    e_shentsize;        // 节头表项的大小
+    elf64_half    e_shnum;            // 节头表中的条目数
+    elf64_half    e_shstrndx;         // 节头表字符串表的索引
 } elf64_ehdr_t;
 
+typedef struct {
+    elf64_word    p_type;             // 段类型，如代码段、数据段等
+    elf64_word    p_flags;            // 段的属性，如可读、可写、可执行等
+    elf64_off     p_offset;           // 段在文件中的偏移量
+    elf64_addr    p_vaddr;            // 段在虚拟内存中的起始地址
+    elf64_addr    p_paddr;            // 段在物理内存中的起始地址（在大多数情况下与p_vaddr相同）
+    elf64_xword   p_filesz;           // 段在文件中的大小
+    elf64_xword   p_memsz;            // 段在内存中的大小
+    elf64_xword   p_align;            // 段在内存中的对齐方式
+} elf64_phdr_t;
 
 
 #endif
