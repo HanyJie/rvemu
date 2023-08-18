@@ -13,9 +13,9 @@ u64 roundup(u64 addr, long pagesz) {
 }
 
 static int flag_to_prot(elf64_word flag) {
-    return (flag & PL_X) ? PROT_EXEC :
-           (flag & PL_W) ? PROT_WRITE:
-           (flag & PL_R) ? PROT_READ : PROT_NONE;
+    return ((flag & PL_X) ? PROT_EXEC : 0) |
+           ((flag & PL_W) ? PROT_WRITE: 0) |
+           ((flag & PL_R) ? PROT_READ : 0);
 }
 
 static void mmu_load_phdr(elf64_ehdr_t *ehdr, elf64_phdr_t *phdr, u64 i, FILE *file) {
@@ -32,7 +32,7 @@ static void mmu_load_phdr(elf64_ehdr_t *ehdr, elf64_phdr_t *phdr, u64 i, FILE *f
 static void mmu_load_seg(mmu_t *mmu, elf64_ehdr_t *ehdr, elf64_phdr_t *phdr, FILE *file, char* program) {
     int fd = open(program, O_RDONLY);
 
-    long pagesz = getpagesize();  // 4096 4KB
+    long pagesz = getpagesize();  // 4096 4KBma
     elf64_off   offset       = phdr->p_offset;
     elf64_addr  vaddr        = phdr->p_vaddr + BASE;  // 将vaddr映射到运行程序的地址
     elf64_addr  align_vaddr  = rouddown(vaddr, pagesz);  // 将地址按页表对齐
